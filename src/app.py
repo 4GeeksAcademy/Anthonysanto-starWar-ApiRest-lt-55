@@ -55,9 +55,24 @@ def handle_character():
     print(all_characters)
     results = list(map(lambda character: character.serialize(),all_characters))
     print(list(results))
+    
     response_body = {
 
         "characters": results
+    }  
+
+    return jsonify(response_body), 200
+
+
+@app.route('/character', methods=['POST'])
+def add_character():
+
+    character = Character(Name="R2-D2",gender="n/a",skin_color="n/a",eye_color="n/a",height="n/a")
+    db.session.add(character)
+    db.session.commit()
+    response_body = {
+
+        "msg":"creado"
     }  
 
     return jsonify(response_body), 200

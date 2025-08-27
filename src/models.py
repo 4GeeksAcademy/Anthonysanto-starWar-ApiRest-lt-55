@@ -22,7 +22,7 @@ class User(db.Model):
 class Character(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     #user_name: Mapped[str] = mapped_column(String(50), nullable=False)
-    Name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    Name: Mapped[str] = mapped_column(String(120), unique=False, nullable=False)
     gender: Mapped[str] = mapped_column(nullable=False)
     skin_color: Mapped[str] = mapped_column(nullable=False)
     eye_color: Mapped[str] = mapped_column(nullable=False)
