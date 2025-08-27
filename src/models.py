@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, Boolean,ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import List
 
 db = SQLAlchemy()
 
@@ -10,6 +11,9 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
 
+    favoritescharacters: Mapped[List["FavoriteCharacter"]] = relationship(back_populates="user")
+
+    
     def serialize(self):
         return {
             "id": self.id,
@@ -36,12 +40,30 @@ class Character(db.Model):
             "skin_color": self.skin_color,
             "eye_color": self.eye_color,
             "height": self.height
-
-
             # do not serialize the password, its a security breach
         }
 
- 				
+
+
+ #Favorito
+class FavoriteCharacter(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user: Mapped[int] = mapped_column(nullable=False)
+    character_id: Mapped[int] = mapped_column(nullable=False)
+
+    # Relaciones
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship(back_populates="favoritescharacters")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user": self.user,
+            "character_id": self.character_id
+        }
+    
+				
 class Planet(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     #user_name: Mapped[str] = mapped_column(String(50), nullable=False)
