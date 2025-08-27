@@ -9,6 +9,7 @@ from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db, User,Character, Planet
+from sqlalchemy import select
 #from models import Person
 
 app = Flask(__name__)
@@ -67,12 +68,17 @@ def handle_character():
 @app.route('/character', methods=['POST'])
 def add_character():
 
-    character = Character(Name="R2-D2",gender="n/a",skin_color="n/a",eye_color="n/a",height="n/a")
+    body = request.get_json()
+
+    if body['Name']== '':
+        return jsonify({"msg": "nombre no puede quedar vacio"}),400
+    
+    character = Character(**body)
     db.session.add(character)
     db.session.commit()
     response_body = {
 
-        "msg":"creado"
+        "character" : character.serialize()
     }  
 
     return jsonify(response_body), 200
@@ -89,6 +95,21 @@ def handle_planet():
     }  
 
     return jsonify(response_body), 200
+
+@app.route('/character/<int:character_id>', methods=['DELETE'])
+def remove_character(character_id):
+    character = db.session.execute(select(Character).where(Character.id == character_id)).scalar_one_or_none()
+
+    db.session.delete(character)
+    db.session.commit()
+ 
+ 
+    response_body = {
+        "msg" : "Eliminado exitosamente "+ character.Name 
+    }
+    return jsonify(response_body), 200
+
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
