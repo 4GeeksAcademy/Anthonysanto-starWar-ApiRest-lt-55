@@ -96,6 +96,24 @@ def handle_planet():
 
     return jsonify(response_body), 200
 
+@app.route('/planet', methods=['POST'])
+def add_planet():
+
+    body = request.get_json()
+
+    if body['Name']== '':
+        return jsonify({"msg": "nombre no puede quedar vacio"}),400
+    
+    planet = Planet(**body)
+    db.session.add(planet)
+    db.session.commit()
+    response_body = {
+
+        "planet" : planet.serialize()
+    }  
+
+    return jsonify(response_body), 200    
+
 @app.route('/character/<int:character_id>', methods=['DELETE'])
 def remove_character(character_id):
     character = db.session.execute(select(Character).where(Character.id == character_id)).scalar_one_or_none()
@@ -106,6 +124,19 @@ def remove_character(character_id):
  
     response_body = {
         "msg" : "Eliminado exitosamente "+ character.Name 
+    }
+    return jsonify(response_body), 200
+
+@app.route('/planet/<int:planet_id>', methods=['DELETE'])
+def remove_planet(planet_id):
+    planet = db.session.execute(select(Planet).where(Planet.id == planet_id)).scalar_one_or_none()
+
+    db.session.delete(planet)
+    db.session.commit()
+ 
+ 
+    response_body = {
+        "msg" : "Eliminado exitosamente "+ planet.name 
     }
     return jsonify(response_body), 200
 
