@@ -34,7 +34,8 @@ class Character(db.Model):
     eye_color: Mapped[str] = mapped_column(nullable=False)
     height: Mapped[str] = mapped_column(String(10))
 
-    favorites: Mapped[List["FavoriteCharacter"]] = relationship(back_populates="character")
+    #favorites: Mapped[List["FavoriteCharacter"]] = relationship(back_populates="character")
+    favorites: Mapped[List["FavoriteCharacter"]] = relationship(back_populates="character",cascade="all, delete-orphan")
 
     def __repr__(self):
         return self.Name
@@ -53,8 +54,10 @@ class Character(db.Model):
  #Favorito
 class FavoriteCharacter(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
+    
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
-    character_id: Mapped[int] = mapped_column(ForeignKey("character.id"), nullable=False)
+    #character_id: Mapped[int] = mapped_column(ForeignKey("character.id"), nullable=False)
+    character_id: Mapped[int] = mapped_column(ForeignKey("character.id", ondelete="CASCADE"),nullable=False)
 
     # Relaciones
     user: Mapped["User"] = relationship(back_populates="favoritescharacters")
@@ -78,7 +81,7 @@ class Planet(db.Model):
     rotation_period: Mapped[str] = mapped_column(nullable=False)
     population: Mapped[int] = mapped_column(String(10))
 
-    favoritespl: Mapped[List["FavoritePlanet"]] = relationship(back_populates="planet")
+    favoritespl: Mapped[List["FavoritePlanet"]] = relationship(back_populates="planet",cascade="all, delete-orphan")
     
     def __repr__(self):
         return self.name
