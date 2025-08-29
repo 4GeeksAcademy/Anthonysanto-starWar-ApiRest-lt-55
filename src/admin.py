@@ -5,13 +5,13 @@ from flask_admin.contrib.sqla import ModelView
 
 
 class FavoriteCharacterAdmin(ModelView):
-    column_list= {'id','user','character_id','name'}
-    form_column= {'user','character_id','name'}
+    column_list= {'id','user','character_id','character'}
+ 
 
 
 class FavoritePlanetAdmin(ModelView):
-    column_list= {'id','user','planet_id'}
-    form_column= {'user','planet_id'}
+    column_list = {'id','user','planet_id','planet'}
+    form_column = {'user','planet_id'}
 
 
 def setup_admin(app):

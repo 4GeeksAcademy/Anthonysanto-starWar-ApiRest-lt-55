@@ -16,7 +16,7 @@ class User(db.Model):
     favoritesplanets: Mapped[List["FavoritePlanet"]] = relationship(back_populates="user")
 
     def __repr__(self):
-        return  self.email  
+        return  self.name  
     
     def serialize(self):
         return {
@@ -60,15 +60,15 @@ class FavoriteCharacter(db.Model):
     user: Mapped["User"] = relationship(back_populates="favoritescharacters")
     character: Mapped["Character"] = relationship(back_populates="favorites")
 
-    def __repr__(self):
-        return f"<FavoriteCharacter user={self.user.email} character={self.character.Name}>"
+    # def __repr__(self):
+    #     return f"<FavoriteCharacter user={self.user.name} character={self.character.Name}>"
 
-    def serialize(self):
-        return {
-            "id": self.id,
-            "user": self.user.email,
-            "character": self.character.Name
-        }
+    # def serialize(self):
+    #     return {
+    #         "id": self.id,
+    #         "user": self.user.name,
+    #         "character": self.character.Name
+    #     }
     
 class Planet(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -102,12 +102,12 @@ class FavoritePlanet(db.Model):
     user: Mapped["User"] = relationship(back_populates="favoritesplanets")
     planet: Mapped["Planet"] = relationship(back_populates="favoritespl")
 
-    def __repr__(self):
-        return f"<FavoriteCharacter user={self.user.email} character={self.character.Name}>"
+    # def __repr__(self):
+    #     return f"<FavoritePlanet user={self.user.mail} character={self.character.Name}>"
 
-    def serialize(self):
-        return {
-            "id": self.id,
-            "user": self.user.email,
-            "character": self.character.Name
-        }
+    # def serialize(self):
+    #     return {
+    #         "id": self.id,
+    #         "user": self.user.mail,
+    #         "character": self.character.Name
+    #     }
