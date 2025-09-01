@@ -28,22 +28,21 @@ class User(db.Model):
 
 class Character(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    Name: Mapped[str] = mapped_column(String(120), unique=False, nullable=False)
+    name: Mapped[str] = mapped_column(String(120), unique=False, nullable=False)
     gender: Mapped[str] = mapped_column(nullable=False)
     skin_color: Mapped[str] = mapped_column(nullable=False)
     eye_color: Mapped[str] = mapped_column(nullable=False)
     height: Mapped[str] = mapped_column(String(10))
 
-    #favorites: Mapped[List["FavoriteCharacter"]] = relationship(back_populates="character")
     favorites: Mapped[List["FavoriteCharacter"]] = relationship(back_populates="character",cascade="all, delete-orphan")
 
     def __repr__(self):
-        return self.Name
+        return self.name
 
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.Name,
+            "name": self.name,
             "gender": self.gender,
             "skin_color": self.skin_color,
             "eye_color": self.eye_color,
@@ -51,7 +50,6 @@ class Character(db.Model):
  
         }
 
- #Favorito
 class FavoriteCharacter(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     
@@ -59,19 +57,8 @@ class FavoriteCharacter(db.Model):
     #character_id: Mapped[int] = mapped_column(ForeignKey("character.id"), nullable=False)
     character_id: Mapped[int] = mapped_column(ForeignKey("character.id", ondelete="CASCADE"),nullable=False)
 
-    # Relaciones
     user: Mapped["User"] = relationship(back_populates="favoritescharacters")
     character: Mapped["Character"] = relationship(back_populates="favorites")
-
-    # def __repr__(self):
-    #     return f"<FavoriteCharacter user={self.user.name} character={self.character.Name}>"
-
-    # def serialize(self):
-    #     return {
-    #         "id": self.id,
-    #         "user": self.user.name,
-    #         "character": self.character.Name
-    #     }
     
 class Planet(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -101,16 +88,6 @@ class FavoritePlanet(db.Model):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     planet_id: Mapped[int] = mapped_column(ForeignKey("planet.id"), nullable=False)
 
-    # Relaciones
+
     user: Mapped["User"] = relationship(back_populates="favoritesplanets")
     planet: Mapped["Planet"] = relationship(back_populates="favoritespl")
-
-    # def __repr__(self):
-    #     return f"<FavoritePlanet user={self.user.mail} character={self.character.Name}>"
-
-    # def serialize(self):
-    #     return {
-    #         "id": self.id,
-    #         "user": self.user.mail,
-    #         "character": self.character.Name
-    #     }
